@@ -1,0 +1,89 @@
+/* 通用样式 */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* 主要容器 - 让白色框更大 */
+.container {
+    background: white;
+    padding: 30px;  /* 让内部空隙更大 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 420px;  /* 让框变宽（默认 350px） */
+    text-align: center;
+}
+
+
+/* 标题 */
+h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 输入框样式 */
+.input-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* 按钮 */
+.btn {
+    background: #007BFF;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.back-home {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.back-home:hover {
+    background: #0056b3;
+}
+
+
+.btn:hover {
+    background: #0056b3;
+}
+
+/* 链接 */
+p a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}

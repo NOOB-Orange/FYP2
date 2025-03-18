@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户登录</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+    <script>
+        async function loginUser(event) {
+            event.preventDefault();
+
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+            let loginButton = document.getElementById("loginButton");
+
+            loginButton.innerText = "登录中...";
+            loginButton.disabled = true;
+
+            let response = await fetch("http://localhost:8000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            let data = await response.json();
+
+            if (response.ok) {
+                alert("登录成功！即将跳转到主页...");
+                localStorage.setItem("user_id", data.user.id);  
+                localStorage.setItem("user_name", data.user.name);
+                window.location.href = "http://localhost:8000/dashboard.html";  
+            } else {
+                alert("登录失败：" + data.detail);  
+            }
+
+            loginButton.innerText = "登录";
+            loginButton.disabled = false;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>用户登录</h2>
+        <form onsubmit="loginUser(event)">
+            <div class="input-group">
+                <label for="email">邮箱:</label>
+                <input type="email" id="email" required placeholder="请输入邮箱">
+            </div>
+
+            <div class="input-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" required placeholder="请输入密码">
+            </div>
+
+            <button type="submit" id="loginButton" class="btn">登录</button>
+        </form>
+
+        <p>没有账户？ <a href="/register/">点击注册</a></p>
+        <a href="/" class="back-home">🏠 返回主页</a>
+    </div>
+</body>
+</html>
