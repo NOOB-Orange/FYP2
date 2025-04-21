@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    
+    <link rel="stylesheet" href="https://data.thintuit.com/css/style.css">
+    <script src="https://data.thintuit.com/js/main.js" defer></script>
+
+    
+    <script>
+        async function registerUser(event) {
+            event.preventDefault();
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            try {
+                let response = await fetch("https://data.thintuit.com/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                let data = await response.json();
+
+                if (response.ok) {
+                    alert("注册成功！请点击'已有账户？点击登录'进行登录。");
+                    document.getElementById("name").value = "";
+                    document.getElementById("email").value = "";
+                    document.getElementById("password").value = "";
+                } else {
+                    throw new Error(data.detail || "注册失败");
+                }
+            } catch (error) {
+                console.error("注册请求失败:", error);
+                alert("注册失败：" + error.message);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>用户注册</h2>
+        <form onsubmit="registerUser(event)">
+            <div class="input-group">
+                <label for="name">用户名:</label>
+                <input type="text" id="name" required placeholder="请输入用户名">
+            </div>
+            <div class="input-group">
+                <label for="email">邮箱:</label>
+                <input type="email" id="email" required placeholder="请输入邮箱">
+            </div>
+            <div class="input-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" required placeholder="请输入密码">
+            </div>
+            <button type="submit" class="btn">注册</button>
+        </form>
+        
+        <p>已有账户？ <a href="https://data.thintuit.com/login/">点击登录</a></p>
+        <a href="https://data.thintuit.com/" class="back-home">🏠 返回主页</a>
+    </div>
+</body>
+</html>

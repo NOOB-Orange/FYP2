@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>API连接测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            min-height: 20px;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+    <script src="/js/secure-requests.js"></script>
+</head>
+<body>
+    <h1>API连接测试</h1>
+    
+    <div class="info">
+        <p>根据老师的调试信息，我们知道：</p>
+        <ol>
+            <li>静态站点在 data.thintuit.com （端口41284）</li>
+            <li>FastAPI运行在端口41285，通过代理映射到 dev.thintuit.com</li>
+            <li>静态文件和API路由不能共用同一路径</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>Root API测试</h2>
+        <button id="testRoot">测试根API</button>
+        <div class="result" id="rootResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>注册API测试</h2>
+        <input type="text" id="registerName" placeholder="名称" value="测试用户">
+        <input type="email" id="registerEmail" placeholder="邮箱" value="test@example.com">
+        <input type="password" id="registerPassword" placeholder="密码" value="password123">
+        <button id="testRegister">测试注册API</button>
+        <div class="result" id="registerResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>登录API测试</h2>
+        <input type="email" id="loginEmail" placeholder="邮箱" value="test@example.com">
+        <input type="password" id="loginPassword" placeholder="密码" value="password123">
+        <button id="testLogin">测试登录API</button>
+        <div class="result" id="loginResult"></div>
+    </div>
+    
+    <script>
+        // 显示结果的辅助函数
+        function showResult(elementId, isSuccess, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = isSuccess ? 'result success' : 'result error';
+            
+            if (data) {
+                const pre = document.createElement('pre');
+                pre.textContent = JSON.stringify(data, null, 2);
+                element.appendChild(pre);
+            }
+        }
+        
+        // 测试根API
+        document.getElementById('testRoot').addEventListener('click', async () => {
+            try {
+                // 优先顺序反映老师设置的代理配置
+                const urls = [
+                    'https://dev.thintuit.com/',           // 首选 - 代理到FastAPI
+                    'http://dev.thintuit.com/',            // 备选 - HTTP版本
+                    'https://dev.thintuit.com:41285/',     // 备选 - 直接端口访问
+                    'http://localhost:41285/'              // 本地开发
+                ];
+                
+                let successUrl = null;
+                let responseData = null;
+                
+                for (const url of urls) {
+                    try {
+                        console.log(`尝试连接: ${url}`);
+                        const response = await fetch(url, {
+                            method: 'GET',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            mode: 'cors'
+                        });
+                        
+                        if (response.ok) {
+                            responseData = await response.json();
+                            successUrl = url;
+                            break;
+                        }
+                    } catch (innerError) {
+                        console.error(`URL ${url} 连接失败: ${innerError.message}`);
+                    }
+                }
+                
+                if (successUrl) {
+                    showResult('rootResult', true, `✅ 连接成功! 使用URL: ${successUrl}`, responseData);
+                } else {
+                    showResult('rootResult', false, '❌ 所有URL连接失败');
+                }
+            } catch (error) {
+                showResult('rootResult', false, `❌ 测试失败: ${error.message}`);
+            }
+        });
+        
+        // 测试注册API
+        document.getElementById('testRegister').addEventListener('click', async () => {
+            try {
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                
+                // 生成随机邮箱以避免重复
+                const randomEmail = `test_${Math.floor(Math.random() * 10000)}@example.com`;
+                
+                const formData = {
+                    name: name,
+                    email: randomEmail,
+                    password: password
+                };
+                
+                // 优先顺序反映老师设置的代理配置
+                const urls = [
+                    'https://dev.thintuit.com/register',       // 首选 - 代理到FastAPI
+                    'http://dev.thintuit.com/register',        // 备选 - HTTP版本
+                    'https://dev.thintuit.com:41285/register', // 备选 - 直接端口访问
+                    'http://localhost:41285/register'          // 本地开发
+                ];
+                
+                let successUrl = null;
+                let responseData = null;
+                
+                for (const url of urls) {
+                    try {
+                        console.log(`尝试连接: ${url}`);
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify(formData),
+                            mode: 'cors'
+                        });
+                        
+                        responseData = await response.json();
+                        
+                        if (response.ok) {
+                            successUrl = url;
+                            break;
+                        }
+                    } catch (innerError) {
+                        console.error(`URL ${url} 连接失败: ${innerError.message}`);
+                    }
+                }
+                
+                if (successUrl) {
+                    showResult('registerResult', true, `✅ 注册成功! 使用URL: ${successUrl}`, responseData);
+                    document.getElementById('loginEmail').value = randomEmail;
+                } else {
+                    showResult('registerResult', false, '❌ 所有URL注册失败', responseData);
+                }
+            } catch (error) {
+                showResult('registerResult', false, `❌ 注册失败: ${error.message}`);
+            }
+        });
+        
+        // 测试登录API
+        document.getElementById('testLogin').addEventListener('click', async () => {
+            try {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                const formData = {
+                    email: email,
+                    password: password
+                };
+                
+                // 优先顺序反映老师设置的代理配置
+                const urls = [
+                    'https://dev.thintuit.com/login',       // 首选 - 代理到FastAPI
+                    'http://dev.thintuit.com/login',        // 备选 - HTTP版本
+                    'https://dev.thintuit.com:41285/login', // 备选 - 直接端口访问
+                    'http://localhost:41285/login'          // 本地开发
+                ];
+                
+                let successUrl = null;
+                let responseData = null;
+                
+                for (const url of urls) {
+                    try {
+                        console.log(`尝试连接: ${url}`);
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: { 
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json' 
+                            },
+                            body: JSON.stringify(formData),
+                            mode: 'cors'
+                        });
+                        
+                        responseData = await response.json();
+                        
+                        if (response.ok) {
+                            successUrl = url;
+                            break;
+                        }
+                    } catch (innerError) {
+                        console.error(`URL ${url} 连接失败: ${innerError.message}`);
+                    }
+                }
+                
+                if (successUrl) {
+                    showResult('loginResult', true, `✅ 登录成功! 使用URL: ${successUrl}`, responseData);
+                } else {
+                    showResult('loginResult', false, '❌ 所有URL登录失败', responseData);
+                }
+            } catch (error) {
+                showResult('loginResult', false, `❌ 登录失败: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html> 

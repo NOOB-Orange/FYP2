@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户注册</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- 确保CSS路径正确 -->
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/static/js/main.js" defer></script>
+
+    
+    <script>
+        async function registerUser(event) {
+            event.preventDefault();
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            try {
+                let response = await fetch("//dev.thintuit.com/register", { 
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, password })
+                });
+
+                let data = await response.json();
+
+                if (response.ok) {
+                    // 显示成功消息
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'success-message';
+                    successMessage.innerHTML = `
+                        <p>🎉 注册成功！</p>
+                        <p>请点击下方的"点击登录"链接进行登录。</p>
+                    `;
+                    
+                    // 清空表单
+                    document.getElementById("name").value = "";
+                    document.getElementById("email").value = "";
+                    document.getElementById("password").value = "";
+                    
+                    // 在表单后插入成功消息
+                    const form = document.querySelector('form');
+                    form.parentNode.insertBefore(successMessage, form.nextSibling);
+                    
+                    // 3秒后自动移除成功消息
+                    setTimeout(() => {
+                        successMessage.remove();
+                    }, 3000);
+                } else {
+                    alert("注册失败：" + data.detail);
+                }
+            } catch (error) {
+                alert("注册过程中发生错误，请稍后重试");
+                console.error("Registration error:", error);
+            }
+        }
+    </script>
+    <style>
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>用户注册333</h2>
+        <form onsubmit="registerUser(event)">
+            <div class="input-group">
+                <label for="name">用户名:</label>
+                <input type="text" id="name" required placeholder="请输入用户名">
+            </div>
+            <div class="input-group">
+                <label for="email">邮箱:</label>
+                <input type="email" id="email" required placeholder="请输入邮箱">
+            </div>
+            <div class="input-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" required placeholder="请输入密码">
+            </div>
+            <button type="submit" class="btn">注册</button>
+        </form>
+        
+        <p>已有账户？ <a href="/login/">点击登录</a></p>
+        <a href="/" class="back-home">🏠 返回主页</a>
+    </div>
+</body>
+</html>
