@@ -9,10 +9,14 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr
 from contextlib import asynccontextmanager
 from fastapi import Request, HTTPException, Depends
+from fastapi import APIRouter
+from decimal import Decimal
 
 
 # ✅ 日志配置
 logging.basicConfig(level=logging.INFO)
+
+router = APIRouter()
 
 # ✅ 数据模型定义
 class UserCreate(BaseModel):
@@ -295,6 +299,45 @@ async def list_all_users(user=Depends(admin_only)):
             "users": [dict(row) for row in rows]
         }
 
+@app.get("/visualization", include_in_schema=False)
+async def serve_visualization():
+    return FileResponse("/home/thintuit/code/WebSite-Thintuit/public/visualization/index.html")
+
+@app.get("/api/accuracy")
+async def get_model_accuracy(request: Request):
+    try:
+        async with request.app.state.db_pool.acquire() as conn:
+            records = await conn.fetch("""
+                SELECT
+                  model_id,
+                  correct_category,
+                  COUNT(*) AS total,
+                  COUNT(*) FILTER (WHERE ml_category_final = correct_category) AS correct,
+                  ROUND(
+                    COUNT(*) FILTER (WHERE ml_category_final = correct_category)::NUMERIC / COUNT(*) * 100, 2
+                  ) AS accuracy_percent
+                FROM testrecordsdetails2022
+                GROUP BY model_id, correct_category
+                ORDER BY correct_category, model_id;
+            """)
+
+            # ✅ 手动转 float，确保 JSON 能序列化
+            data = []
+            for r in records:
+                row = dict(r)
+                if isinstance(row["accuracy_percent"], Decimal):
+                    row["accuracy_percent"] = float(row["accuracy_percent"])
+                data.append(row)
+
+            return JSONResponse(content=data)
+
+    except Exception as e:
+        import logging
+        logging.error(f"获取准确率数据失败: {str(e)}", exc_info=True)
+        return JSONResponse(status_code=500, content={"error": "内部服务器错误", "detail": str(e)})
+
+# ✅ 别忘了注册路由！
+app.include_router(router)
 
 @app.post("/logout")
 async def logout_user():
@@ -403,6 +446,8 @@ async def delete_account(request: Request):
     except Exception as e:
         logging.error(f"❌ 删除账户失败: {str(e)}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"服务器内部错误: {str(e)}")
+
+
 
 # ✅ 根路径只返回 API 欢迎信息，避免冲突
 @app.get("/")
