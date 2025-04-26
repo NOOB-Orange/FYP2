@@ -1,0 +1,55 @@
+nohup: ignoring input
+INFO:root:✅ 成功挂载静态目录到 /static: /home/thintuit/code/WebSite-Thintuit/public
+INFO:     Started server process [3928903]
+INFO:     Waiting for application startup.
+INFO:root:✅ 数据库连接成功
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:41285 (Press CTRL+C to quit)
+INFO:root:📩 收到登录请求: 2985064405@qq.com
+INFO:root:🔍 用户信息: <Record user_id=UUID('5e6a6cfe-10b1-497c-89ec-8ba52ea47c37') name='orange' email='2985064405@qq.com' password='$2b$12$z2DOGAWIsQhnVzUuqCf0mu4AXfzU6WwYix.jrMUCA.CITY4qPD1WG' created_at=datetime.datetime(2025, 4, 21, 6, 5, 52, 669963) role='admin'>
+INFO:root:✅ 用户 2985064405@qq.com 登录成功！
+INFO:     49.64.16.5:0 - "POST /login HTTP/1.0" 200 OK
+INFO:     49.64.16.5:0 - "OPTIONS /login HTTP/1.0" 200 OK
+INFO:root:📩 收到登录请求: 2985064405@qq.com
+INFO:root:🔍 用户信息: <Record user_id=UUID('5e6a6cfe-10b1-497c-89ec-8ba52ea47c37') name='orange' email='2985064405@qq.com' password='$2b$12$z2DOGAWIsQhnVzUuqCf0mu4AXfzU6WwYix.jrMUCA.CITY4qPD1WG' created_at=datetime.datetime(2025, 4, 21, 6, 5, 52, 669963) role='admin'>
+INFO:root:✅ 用户 2985064405@qq.com 登录成功！
+INFO:     49.64.16.5:0 - "POST /login HTTP/1.0" 200 OK
+INFO:     49.64.16.5:0 - "OPTIONS /login HTTP/1.0" 200 OK
+INFO:root:📩 收到登录请求: 2985064405@qq.com
+INFO:root:🔍 用户信息: <Record user_id=UUID('5e6a6cfe-10b1-497c-89ec-8ba52ea47c37') name='orange' email='2985064405@qq.com' password='$2b$12$z2DOGAWIsQhnVzUuqCf0mu4AXfzU6WwYix.jrMUCA.CITY4qPD1WG' created_at=datetime.datetime(2025, 4, 21, 6, 5, 52, 669963) role='admin'>
+INFO:root:✅ 用户 2985064405@qq.com 登录成功！
+INFO:     49.64.16.5:0 - "POST /login HTTP/1.0" 200 OK
+INFO:     49.64.16.5:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     183.192.100.116:0 - "OPTIONS /login HTTP/1.0" 200 OK
+INFO:root:📩 收到登录请求: abc@abc.com
+INFO:root:🔍 用户信息: <Record user_id=UUID('dd983f4f-f965-4ec3-a1d8-81ea0597bfa1') name='abc' email='abc@abc.com' password='$2b$12$t5BT8EB77i2ALlBVQQnoI.T.1Kq9dgAi5mijuh.JERoA63AIyB60C' created_at=datetime.datetime(2025, 4, 24, 11, 23, 19, 740946) role='normal'>
+INFO:root:✅ 用户 abc@abc.com 登录成功！
+INFO:     183.192.100.116:0 - "POST /login HTTP/1.0" 200 OK
+INFO:     183.192.100.116:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "OPTIONS /login HTTP/1.0" 200 OK
+INFO:root:📩 收到登录请求: 2985064405@qq.com
+INFO:root:🔍 用户信息: <Record user_id=UUID('5e6a6cfe-10b1-497c-89ec-8ba52ea47c37') name='orange' email='2985064405@qq.com' password='$2b$12$z2DOGAWIsQhnVzUuqCf0mu4AXfzU6WwYix.jrMUCA.CITY4qPD1WG' created_at=datetime.datetime(2025, 4, 21, 6, 5, 52, 669963) role='admin'>
+INFO:root:✅ 用户 2985064405@qq.com 登录成功！
+INFO:     104.194.8.36:0 - "POST /login HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     183.192.100.116:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     183.192.100.116:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK
+INFO:     104.194.8.36:0 - "GET /api/accuracy HTTP/1.0" 200 OK

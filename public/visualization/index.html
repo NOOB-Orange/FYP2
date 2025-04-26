@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>识别准确率可视化</title>
   <script src="/js/chart.umd.js"></script>
+  <script src="./purity-chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2/dist/echarts-gl.min.js"></script>
+  <script src="./render3DPurityChart.js"></script>
   <style>
     body {
       font-family: "Segoe UI", sans-serif;
@@ -111,6 +115,8 @@
     </div>
     <span class="toggle-button" onclick="toggleOrientation()">🔁 切换图表方向</span>
     <span class="export-button" onclick="downloadChart()">📤 导出图表图片</span>
+    <span class="export-button" onclick="renderPurityChart()">🌟 查看纯度柱状图</span>
+    <span class="export-button" onclick="render3DPurityChart()">🧊 查看3D纯度图</span>
   </div>
   <div id="chart-container"></div>
   <a class="back-button" href="/dashboard/">← 返回仪表盘</a>
@@ -121,9 +127,10 @@
     const userId = localStorage.getItem("user_id");
     if (!userId) {
       alert("请先登录后再查看可视化内容！");
-      window.location.href = "/login";
+      window.location.href = "/login/";
     }
-  
+    const API_BASE = location.hostname.includes("dev.thintuit.com") ? "" : "https://dev.thintuit.com";
+
     const chartData = {
       raw: [],
       charts: [],
@@ -138,7 +145,7 @@
       "RESIDUAL": "其他垃圾"
     };
   
-    const API_BASE = location.hostname.includes("dev.thintuit.com") ? "" : "https://dev.thintuit.com";
+
   
     fetch(`${API_BASE}/api/accuracy`)
       .then(response => response.json())
