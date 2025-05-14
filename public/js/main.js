@@ -1,12 +1,12 @@
-// 安全请求拦截逻辑
+// Secure request interceptor
 (function() {
-    // 拦截并修改所有 fetch 请求，自动升级 http → https
+    // Intercept and upgrade all HTTP fetch requests to HTTPS
     if (window.fetch) {
         const originalFetch = window.fetch;
         window.fetch = function(url, options) {
             if (typeof url === 'string' && url.startsWith('http:')) {
                 url = url.replace('http:', 'https:');
-                console.log('[安全请求拦截] 已将 HTTP 请求升级为 HTTPS:', url);
+                console.log('[Secure Request Interceptor] Upgraded HTTP to HTTPS:', url);
             }
             return originalFetch(url, options);
         };
@@ -17,9 +17,9 @@ async function registerUser(event) {
     event.preventDefault();
 
     const submitButton = document.querySelector('button[type="submit"]');
-    const originalButtonText = submitButton ? submitButton.textContent : "注册";
+    const originalButtonText = submitButton ? submitButton.textContent : "Register";
     if (submitButton) {
-        submitButton.textContent = "注册中...";
+        submitButton.textContent = "Registering...";
         submitButton.disabled = true;
     }
 
@@ -40,13 +40,12 @@ async function registerUser(event) {
                 email: formData.email, 
                 password: formData.password 
             }),
-            credentials: "include"  // 如果你用cookie等认证
+            credentials: "include"  // if using cookies or similar for authentication
         });
-        
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.detail || "注册失败");
+            throw new Error(errorData.detail || "Registration failed");
         }
 
         const data = await response.json();
@@ -59,8 +58,8 @@ async function registerUser(event) {
             const successMessage = document.createElement('div');
             successMessage.className = 'success-message';
             successMessage.innerHTML = `
-                <p>🎉 注册成功！</p>
-                <p>请点击下方的"点击登录"链接进行登录。</p>
+                <p>🎉 Registration successful!</p>
+                <p>Please click the "Click to login" link below to proceed.</p>
             `;
 
             const form = document.querySelector('form');
@@ -70,17 +69,17 @@ async function registerUser(event) {
                     successMessage.remove();
                 }, 5000);
             } else {
-                alert("注册成功！请点击\"已有账户？点击登录\"继续操作。");
+                alert("Registration successful! Please click \"Already have an account? Click to login\" to continue.");
             }
 
-            console.log("注册成功，请手动点击登录链接");
+            console.log("Registration successful. Please manually click the login link.");
         } else {
-            throw new Error(data.message || "注册失败");
+            throw new Error(data.message || "Registration failed");
         }
 
     } catch (error) {
-        console.error("注册错误:", error);
-        alert(`注册失败: ${error.message}`);
+        console.error("Registration error:", error);
+        alert(`Registration failed: ${error.message}`);
     } finally {
         if (submitButton) {
             submitButton.textContent = originalButtonText;
@@ -90,5 +89,5 @@ async function registerUser(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    console.log("✅ main.js 已成功加载！版本：2025-04-21 安全增强版");
+    console.log("✅ main.js loaded successfully! Version: 2025-5-14 Secure Enhanced");
 });

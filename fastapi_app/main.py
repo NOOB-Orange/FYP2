@@ -100,7 +100,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://data.thintuit.com", "http://data.thintuit.com",
-        "https://dev.thintuit.com", "http://dev.thintuit.com",  # ✅ 加上这一行！
+        "https://dev.thintuit.com", "http://dev.thintuit.com",  
         "http://localhost:41284", "https://localhost:41284"
     ],
     allow_credentials=True,

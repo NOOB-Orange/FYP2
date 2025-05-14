@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>用户登录</title>
+    <title>User Login</title>
     <link rel="stylesheet" href="/css/style.css">
 
     <script>
@@ -14,14 +14,12 @@
             let password = document.getElementById("password").value;
             let loginButton = document.getElementById("loginButton");
 
-            loginButton.innerText = "登录中...";
+            loginButton.innerText = "Logging in...";
             loginButton.disabled = true;
 
             try {
-                // 确保使用正确的API URL - 使用dev.thintuit.com域名
                 let apiUrl = "https://dev.thintuit.com/login";
-                
-                // 检查并确保API URL不包含端口号
+
                 if (apiUrl.includes(":41284") || apiUrl.includes(":41285")) {
                     apiUrl = apiUrl.replace(/:\d+/, "");
                 }
@@ -34,7 +32,6 @@
 
                 if (!response.ok) {
                     if (response.status === 301 || response.status === 302) {
-                        // 处理重定向
                         window.location.href = response.headers.get("Location") || "/dashboard.html";
                         return;
                     }
@@ -44,20 +41,20 @@
                 let data = await response.json();
 
                 if (response.ok) {
-                    alert("登录成功！即将跳转到主页...");
+                    alert("Login successful! Redirecting to dashboard...");
                     localStorage.setItem('is_logged_in', 'true');
                     localStorage.setItem('user_id', data.user.id);
                     localStorage.setItem('user_name', data.user.name);
                     localStorage.setItem('user_role', data.user.role);
-                    window.location.href = "https://data.thintuit.com/dashboard/";  // 重定向回data域名的dashboard页面
+                    window.location.href = "https://data.thintuit.com/dashboard/";
                 } else {
-                    alert("登录失败：" + (data.detail || "未知错误"));  // 显示错误信息
+                    alert("Login failed: " + (data.detail || "Unknown error"));
                 }
             } catch (error) {
-                console.error("登录请求失败:", error);
-                alert("登录请求失败：" + error.message);
+                console.error("Login request failed:", error);
+                alert("Login request failed: " + error.message);
             } finally {
-                loginButton.innerText = "登录";
+                loginButton.innerText = "Login";
                 loginButton.disabled = false;
             }
         }
@@ -65,23 +62,23 @@
 </head>
 <body>
     <div class="container">
-        <h2>用户登录</h2>
+        <h2>User Login</h2>
         <form onsubmit="loginUser(event)">
             <div class="input-group">
-                <label for="email">邮箱:</label>
-                <input type="email" id="email" required placeholder="请输入邮箱">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required placeholder="Enter your email">
             </div>
 
             <div class="input-group">
-                <label for="password">密码:</label>
-                <input type="password" id="password" required placeholder="请输入密码">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required placeholder="Enter your password">
             </div>
 
-            <button type="submit" id="loginButton" class="btn">登录</button>
+            <button type="submit" id="loginButton" class="btn">Login</button>
         </form>
 
-        <p>没有账户？ <a href="https://data.thintuit.com/register/">点击注册</a></p>
-        <a href="https://data.thintuit.com/" class="back-home">🏠 返回主页</a>
+        <p>Don't have an account? <a href="https://data.thintuit.com/register/">Click to register</a></p>
+        <a href="https://data.thintuit.com/" class="back-home">🏠 Back to Homepage</a>
     </div>
 </body>
 </html>

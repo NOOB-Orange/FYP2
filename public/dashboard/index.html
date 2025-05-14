@@ -1,213 +1,158 @@
 <!DOCTYPE html>
-<html lang="zh">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <script src="/static/js/dashboard.js"></script>
-    <title>用户主页 | Thintuit.</title>
-    <meta name="viewport" content="width=device-width,minimum-scale=1">
-    <meta name="description" content="欢迎来到用户主页 ">
-    <meta name="generator" content="Hugo 0.123.7">
-    
-    
-    
-    
-      <meta name="robots" content="noindex, nofollow">
-    
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <script src="/static/js/dashboard.js"></script>
+  <title>User Dashboard | Thintuit</title>
+  <meta name="viewport" content="width=device-width,minimum-scale=1">
+  <meta name="description" content="Welcome to the user dashboard">
+  <meta name="generator" content="Hugo 0.123.7">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/ananke/css/main.min.css">
+  <link rel="shortcut icon" href="/images/1f913.png" type="image/x-icon" />
 
-    
-<link rel="stylesheet" href="/ananke/css/main.min.css" >
+  <meta property="og:title" content="User Dashboard" />
+  <meta property="og:description" content="Welcome to the user dashboard" />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="/dashboard/" />
+  <meta itemprop="name" content="User Dashboard">
+  <meta itemprop="description" content="Welcome to the user dashboard">
+  <meta itemprop="wordCount" content="1">
+  <meta name="twitter:card" content="summary"/>
+  <meta name="twitter:title" content="User Dashboard"/>
+  <meta name="twitter:description" content="Welcome to the user dashboard"/>
 
-
-
-    
-    
-    
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const isLoggedIn = localStorage.getItem('is_logged_in');
+      const userName = localStorage.getItem('user_name');
       
-<link rel="shortcut icon" href="/images/1f913.png" type="image/x-icon" />
+      if (!isLoggedIn || !userName) {
+        alert('Please log in first');
+        window.location.href = '/login/';
+        return;
+      }
 
+      const userNameElement = document.getElementById('user-name');
+      if (userNameElement) {
+        userNameElement.textContent = userName;
+      }
 
-    
+      const loginLink = document.querySelector('a[href="/login/"]');
+      const registerLink = document.querySelector('a[href="/register/"]');
+      const logoutLink = document.getElementById('logout-link');
 
-    
-    
-    <meta property="og:title" content="用户主页" />
-<meta property="og:description" content="欢迎来到用户主页 " />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="/dashboard/" />
+      if (loginLink) loginLink.style.display = 'none';
+      if (registerLink) registerLink.style.display = 'none';
+      if (logoutLink) logoutLink.style.display = 'block';
+    });
 
-
-
-<meta itemprop="name" content="用户主页">
-<meta itemprop="description" content="欢迎来到用户主页 ">
-
-<meta itemprop="wordCount" content="1">
-<meta itemprop="keywords" content="" /><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="用户主页"/>
-<meta name="twitter:description" content="欢迎来到用户主页 "/>
-
-<script>
-  // 检查用户是否已登录
-  document.addEventListener('DOMContentLoaded', function() {
-    const isLoggedIn = localStorage.getItem('is_logged_in');
-    const userName = localStorage.getItem('user_name');
-    
-    if (!isLoggedIn || !userName) {
-      // 用户未登录，重定向到登录页面
-      alert('请先登录');
-      window.location.href = '/login/';
-      return;
+    function logout() {
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('is_logged_in');
+      window.location.href = '/';
     }
-    
-    // 显示用户名
-    const userNameElement = document.getElementById('user-name');
-    if (userNameElement) {
-      userNameElement.textContent = userName;
-    }
-    
-    // 修改导航栏，隐藏登录和注册链接，显示注销链接
-    const loginLink = document.querySelector('a[href="/login/"]');
-    const registerLink = document.querySelector('a[href="/register/"]');
-    const logoutLink = document.getElementById('logout-link');
-    
-    if (loginLink) loginLink.style.display = 'none';
-    if (registerLink) registerLink.style.display = 'none';
-    if (logoutLink) logoutLink.style.display = 'block';
-  });
-  
-  // 注销函数
-  function logout() {
-    localStorage.removeItem('user_id');
-    localStorage.removeItem('user_name');
-    localStorage.removeItem('is_logged_in');
-    window.location.href = '/';
-  }
-</script>
-	
-  </head>
+  </script>
+</head>
 
-  <body class="ma0 avenir bg-near-white">
+<body class="ma0 avenir bg-near-white">
 
-    
+<header class="cover bg-top" style="background-image: url('/images/Seattle.jpg');">
+  <div class="bg-black-60">
+    <nav class="pv3 ph3 ph4-ns" role="navigation">
+      <div class="flex-l justify-between items-center center">
+        <a href="/dashboard/" class="f3 fw2 hover-white no-underline white-90 dib">
+          <img src="/images/1f913.png" class="w100 mw5-ns" alt="Thintuit." />
+        </a>
+        <div class="flex-l items-center">
+          <ul class="pl0 mr3">
+            <li class="list f5 f4-ns fw4 dib pr3">
+              <a class="hover-white no-underline white-90" href="/我的信息/" title="About page">
+                About
+              </a>
+            </li>
+            <li class="list f5 f4-ns fw4 dib pr3">
+              <a class="hover-white no-underline white-90" href="/设置中心/" title="Articles page">
+                Settings
+              </a>
+            </li>
+            <li class="list f5 f4-ns fw4 dib pr3">
+              <a class="hover-white no-underline white-90" href="/login/" title="Login page">
+                Login
+              </a>
+            </li>
+            <li class="list f5 f4-ns fw4 dib pr3">
+              <a class="hover-white no-underline white-90" href="/register/" title="Register page">
+                Register
+              </a>
+            </li>
+            <li id="logout-link" class="list f5 f4-ns fw4 dib pr3" style="display: none;">
+              <a class="hover-white no-underline white-90" href="javascript:logout()" title="Logout">
+                Logout
+              </a>
+            </li>
+          </ul>
+          <div class="ananke-socials"></div>
+        </div>
+      </div>
+    </nav>
 
-  
-  <header class="cover bg-top" style="background-image: url('/images/Seattle.jpg');">
-    <div class="bg-black-60">
-      <nav class="pv3 ph3 ph4-ns" role="navigation">
-  <div class="flex-l justify-between items-center center">
-    <a href="/dashboard/" class="f3 fw2 hover-white no-underline white-90 dib">
-      
-        <img src="/images/1f913.png" class="w100 mw5-ns" alt="Thintuit." />
-      
-    </a>
-    <div class="flex-l items-center">
-      
-
-      
-        <ul class="pl0 mr3">
-          
-          <li class="list f5 f4-ns fw4 dib pr3">
-            <a class="hover-white no-underline white-90" href="/我的信息/" title="About page">
-              About
-            </a>
-          </li>
-          
-          <li class="list f5 f4-ns fw4 dib pr3">
-            <a class="hover-white no-underline white-90" href="/设置中心/" title="Articles page">
-              Articles
-            </a>
-          </li>
-          
-          <li class="list f5 f4-ns fw4 dib pr3">
-            <a class="hover-white no-underline white-90" href="/login/" title="Login page">
-              Login
-            </a>
-          </li>
-          
-          <li class="list f5 f4-ns fw4 dib pr3">
-            <a class="hover-white no-underline white-90" href="/register/" title="Register page">
-              Register
-            </a>
-          </li>
-          
-          <li id="logout-link" class="list f5 f4-ns fw4 dib pr3" style="display: none;">
-            <a class="hover-white no-underline white-90" href="javascript:logout()" title="Logout">
-              退出登录
-            </a>
-          </li>
-          
-        </ul>
-      
-      
-<div class="ananke-socials">
-  
-</div>
-
+    <div class="tc-l pv6 ph3 ph4-ns">
+      <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">User Dashboard</h1>
+      <h2 class="f3 fw1 white-80">Welcome, <span id="user-name"></span></h2>
     </div>
   </div>
-</nav>
+</header>
 
-      <div class="tc-l pv6 ph3 ph4-ns">
-        
-          <h1 class="f2 f1-l fw2 white-90 mb0 lh-title">用户主页</h1>
-          <h2 class="f3 fw1 white-80">欢迎您, <span id="user-name"></span></h2>
-          
-        
-      </div>
-    </div>
-  </header>
-
-
-    <main class="pb7" role="main">
-      
+<main class="pb7" role="main">
   <div class="flex-l mt2 mw8 center">
     <article class="center cf pv5 ph3 ph4-ns mw7">
       <header>
-        <h1 class="f1">
-          用户主页
-        </h1>
+        <h1 class="f1">User Dashboard</h1>
       </header>
       <div class="nested-copy-line-height lh-copy f4 nested-links mid-gray">
-        <h2 id="欢迎来到用户主页">欢迎来到用户主页</h2>
+        <h2 id="welcome-to-user-dashboard">Welcome to the user dashboard</h2>
         <div class="user-dashboard" style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem;">
 
-          <!-- 📄 用户基本信息卡片 -->
+          <!-- 📄 User Info Card -->
           <div class="card" style="flex: 1 1 300px; background: #f8f9fa; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-            <h3 style="margin-bottom: 1rem;">👤 用户信息</h3>
-            <p><strong>用户ID:</strong> <span id="display-user-id"></span></p>
-            <p><strong>用户名:</strong> <span id="display-user-name"></span></p>
+            <h3 style="margin-bottom: 1rem;">👤 User Info</h3>
+            <p><strong>User ID:</strong> <span id="display-user-id"></span></p>
+            <p><strong>Username:</strong> <span id="display-user-name"></span></p>
           </div>
-        
-          <!-- 🛠 管理员功能卡片 -->
+
+          <!-- 🛠 Admin Panel -->
           <div id="admin-section" class="card" style="display:none; flex: 1 1 300px; background: #e6f7ff; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-            <h3 style="margin-bottom: 1rem;">🛠 管理员功能</h3>
+            <h3 style="margin-bottom: 1rem;">🛠 Admin Tools</h3>
             <ul style="list-style: none; padding-left: 0;">
-              <li style="margin-bottom: 0.5rem;"><a href="/admin/users">👥 用户管理</a></li>
-              <li><a href="#">🧾 系统日志（待开发）</a></li>
-              <li> <a href="/visualization/" class="nav-link">📊 可视化显示</a></li>
+              <li style="margin-bottom: 0.5rem;"><a href="/admin/users">👥 User Management</a></li>
+              <li><a href="#">🧾 System Logs (Coming Soon)</a></li>
+              <li><a href="/visualization/" class="nav-link">📊 Visualization</a></li>
             </ul>
           </div>
-        
-          <!-- 👤 普通用户功能卡片 -->
+
+          <!-- 👤 Regular User Panel -->
           <div id="normal-section" class="card" style="display:none; flex: 1 1 300px; background: #fffbe6; border-radius: 10px; padding: 1.5rem; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
-            <h3 style="margin-bottom: 1rem;">👤 用户功能</h3>
+            <h3 style="margin-bottom: 1rem;">👤 User Functions</h3>
             <ul style="list-style: none; padding-left: 0;">
-              <li style="margin-bottom: 0.5rem;"><a href="#">📄 我的信息（待开发）</a></li>
-              <li><a href="#">⚙️ 设置中心（待开发）</a></li>
-              <li> <a href="/visualization/" class="nav-link">📊 可视化显示</a></li>
+              <li style="margin-bottom: 0.5rem;"><a href="#">📄 My Info (Coming Soon)</a></li>
+              <li><a href="#">⚙️ Settings (Coming Soon)</a></li>
+              <li><a href="/visualization/" class="nav-link">📊 Visualization</a></li>
             </ul>
           </div>
         </div>
-        
-        <!-- JS 角色判断 -->
+
         <script>
           document.addEventListener('DOMContentLoaded', function() {
             const userId = localStorage.getItem('user_id');
             const userName = localStorage.getItem('user_name');
             const role = localStorage.getItem('user_role');
-        
-            document.getElementById('display-user-id').textContent = userId || '未知';
-            document.getElementById('display-user-name').textContent = userName || '未知';
-        
+
+            document.getElementById('display-user-id').textContent = userId || 'Unknown';
+            document.getElementById('display-user-name').textContent = userName || 'Unknown';
+
             if (role === 'admin') {
               document.getElementById('admin-section').style.display = 'block';
             } else {
@@ -215,25 +160,19 @@
             }
           });
         </script>
-        
-        </div>
       </div>
     </article>
   </div>
+</main>
 
-    </main>
-    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+<footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
   <div class="flex justify-between">
-  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="/" >
-    &copy;  Thintuit. 2025 
-  </a>
-    <div>
-<div class="ananke-socials">
-  
-</div>
-</div>
+    <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="/">
+      &copy; Thintuit. 2025 
+    </a>
+    <div class="ananke-socials"></div>
   </div>
 </footer>
 
-  </body>
+</body>
 </html>

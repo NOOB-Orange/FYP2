@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>识别准确率可视化</title>
+  <title>Accuracy Visualization</title>
   <script src="/js/chart.umd.js"></script>
   <script src="./purity-chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
@@ -52,9 +52,11 @@
       padding: 10px;
       border-radius: 8px;
     }
-    .dropdown:hover .dropdown-content {
+    .dropdown:hover .dropdown-content,
+    .dropdown-content:focus-within {
       display: block;
     }
+
     canvas {
       display: block;
       margin: 20px auto;
@@ -95,39 +97,37 @@
 </head>
 <body>
 <div class="container">
-  <h2>模型对各分类的识别准确率</h2>
+  <h2>Model Accuracy per Category</h2>
   <div class="controls">
     <div class="dropdown">
-      <span>筛选模型 ▼</span>
+      <span>Filter Models ▼</span>
       <div class="dropdown-content" id="model-filters"></div>
     </div>
     <div class="dropdown">
-      <span>筛选分类 ▼</span>
+      <span>Filter Categories ▼</span>
       <div class="dropdown-content" id="category-filters"></div>
     </div>
     <div class="dropdown">
-      <span>图表类型 ▼</span>
+      <span>Chart Types ▼</span>
       <div class="dropdown-content" id="chart-types">
-        <label><input type="checkbox" value="bar" checked onchange="renderCharts()"> 柱状图</label><br>
-        <label><input type="checkbox" value="line" onchange="renderCharts()"> 折线图</label><br>
-        <label><input type="checkbox" value="radar" onchange="renderCharts()"> 雷达图</label><br>
+        <label><input type="checkbox" value="bar" checked onchange="renderCharts()"> Bar Chart</label><br>
+        <label><input type="checkbox" value="line" onchange="renderCharts()"> Line Chart</label><br>
+        <label><input type="checkbox" value="radar" onchange="renderCharts()"> Radar Chart</label><br>
       </div>
     </div>
-    <span class="toggle-button" onclick="toggleOrientation()">🔁 切换图表方向</span>
-    <span class="export-button" onclick="downloadChart()">📤 导出图表图片</span>
-    <span class="export-button" onclick="renderPurityChart()">🌟 查看纯度柱状图</span>
-    <span class="export-button" onclick="render3DPurityChart()">🧊 查看3D纯度图</span>
+    <span class="toggle-button" onclick="toggleOrientation()">🔁 Toggle Orientation</span>
+    <span class="export-button" onclick="downloadChart()">📤 Export as Image</span>
+    <span class="export-button" onclick="renderPurityChart()">🌟 View Purity Bar Chart</span>
+    <span class="export-button" onclick="render3DPurityChart()">🧊 View 3D Purity Chart</span>
   </div>
   <div id="chart-container"></div>
-  <a class="back-button" href="/dashboard/">← 返回仪表盘</a>
+  <a class="back-button" href="/dashboard/">← Back to Dashboard</a>
 </div>
-
-
 
 <script>
     const userId = localStorage.getItem("user_id");
     if (!userId) {
-      alert("请先登录后再查看可视化内容！");
+      alert("Please log in to view the visualizations!");
       window.location.href = "/login/";
     }
     const API_BASE = location.hostname.includes("dev.thintuit.com") ? "" : "https://dev.thintuit.com";
@@ -138,16 +138,14 @@
       horizontal: true,
       colors: {}
     };
-  
-    const categoryMap = {
-      "RECYCLABLE": "可回收物",
-      "HOUSEHOLD": "厨余垃圾",
-      "HAZARDOUS": "有害垃圾",
-      "RESIDUAL": "其他垃圾"
-    };
-  
 
-  
+    const categoryMap = {
+      "RECYCLABLE": "Recyclable",
+      "HOUSEHOLD": "Household Waste",
+      "HAZARDOUS": "Hazardous Waste",
+      "RESIDUAL": "Residual Waste"
+    };
+
     fetch(`${API_BASE}/api/accuracy`)
       .then(response => response.json())
       .then(data => {
@@ -155,151 +153,149 @@
         renderControls();
         renderCharts();
       });
-  
+
     function renderControls() {
       const models = [...new Set(chartData.raw.map(d => d.model_id))];
       const categories = [...new Set(chartData.raw.map(d => d.correct_category))];
-  
+
       const modelContainer = document.getElementById("model-filters");
       const categoryContainer = document.getElementById("category-filters");
-  
+
       modelContainer.innerHTML = "";
       categoryContainer.innerHTML = "";
-  
+
       models.forEach(model => {
         chartData.colors[model] = chartData.colors[model] || getRandomColor();
         const id = `model-${model}`;
         const color = chartData.colors[model];
         modelContainer.innerHTML += `<label style="display: flex; align-items: center;"><input type="checkbox" checked id="${id}" onchange="renderCharts()"> <span class="color-indicator" style="background:${color};"></span>${model}<input type="color" value="${color}" onchange="chartData.colors['${model}']=this.value; renderCharts();"></label>`;
       });
-  
+
       categories.forEach(cat => {
         const id = `cat-${cat}`;
         categoryContainer.innerHTML += `<label><input type="checkbox" checked id="${id}" onchange="renderCharts()"> ${categoryMap[cat] || cat}</label><br>`;
       });
     }
-  
+
     function getAxisTitle(axis, type, isHorizontal) {
       if (["radar", "pie", "doughnut"].includes(type)) return "";
-      if (type === "bar" && isHorizontal) return axis === "x" ? "准确率 (%)" : "分类";
-      if (type === "bar" && !isHorizontal) return axis === "x" ? "分类" : "准确率 (%)";
-      if (type === "line") return axis === "x" ? "分类" : "准确率 (%)";
+      if (type === "bar" && isHorizontal) return axis === "x" ? "Accuracy (%)" : "Category";
+      if (type === "bar" && !isHorizontal) return axis === "x" ? "Category" : "Accuracy (%)";
+      if (type === "line") return axis === "x" ? "Category" : "Accuracy (%)";
       return "";
     }
-  
+
     function renderCharts() {
-    // 清除旧图表
-    chartData.charts.forEach(chart => chart.destroy());
-    chartData.charts = [];
+      chartData.charts.forEach(chart => chart.destroy());
+      chartData.charts = [];
 
-    const chartTypes = [...document.querySelectorAll('#chart-types input:checked')].map(input => input.value);
-    const container = document.getElementById("chart-container");
-    container.innerHTML = "";
+      const chartTypes = [...document.querySelectorAll('#chart-types input:checked')].map(input => input.value);
+      const container = document.getElementById("chart-container");
+      container.innerHTML = "";
 
-    chartTypes.forEach(type => {
-      const canvas = document.createElement("canvas");
-      container.appendChild(canvas);
-      const ctx = canvas.getContext("2d");
+      chartTypes.forEach(type => {
+        const canvas = document.createElement("canvas");
+        container.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
 
-      const selectedModels = chartData.raw.map(d => d.model_id).filter((v, i, a) => a.indexOf(v) === i && document.getElementById(`model-${v}`)?.checked);
-      const selectedCats = ["RECYCLABLE", "HOUSEHOLD", "HAZARDOUS", "RESIDUAL"].filter(cat =>
-        chartData.raw.some(d => d.correct_category === cat) &&
-        document.getElementById(`cat-${cat}`)?.checked
-      );
-      const labels = selectedCats.map(cat => categoryMap[cat] || cat);
+        const selectedModels = chartData.raw.map(d => d.model_id).filter((v, i, a) => a.indexOf(v) === i && document.getElementById(`model-${v}`)?.checked);
+        const selectedCats = ["RECYCLABLE", "HOUSEHOLD", "HAZARDOUS", "RESIDUAL"].filter(cat =>
+          chartData.raw.some(d => d.correct_category === cat) &&
+          document.getElementById(`cat-${cat}`)?.checked
+        );
+        const labels = selectedCats.map(cat => categoryMap[cat] || cat);
 
-      const datasets = selectedModels.map(model => {
-        return {
-          label: model,
-          data: selectedCats.map(cat => {
-            const item = chartData.raw.find(d => d.model_id === model && d.correct_category === cat);
-            return item ? item.accuracy_percent : 0;
-          }),
-          backgroundColor: type === 'pie' || type === 'doughnut' ? selectedCats.map(() => chartData.colors[model]) : chartData.colors[model],
-          borderColor: chartData.colors[model],
-          fill: type === 'radar',
-          tension: 0.3
-        };
-      });
+        const datasets = selectedModels.map(model => {
+          return {
+            label: model,
+            data: selectedCats.map(cat => {
+              const item = chartData.raw.find(d => d.model_id === model && d.correct_category === cat);
+              return item ? item.accuracy_percent : 0;
+            }),
+            backgroundColor: type === 'pie' || type === 'doughnut' ? selectedCats.map(() => chartData.colors[model]) : chartData.colors[model],
+            borderColor: chartData.colors[model],
+            fill: type === 'radar',
+            tension: 0.3
+          };
+        });
 
-      const chart = new Chart(ctx, {
-        type: type,
-        data: {
-          labels: labels,
-          datasets: datasets
-        },
-        options: {
-          indexAxis: type === "bar" && chartData.horizontal ? "y" : "x",
-          responsive: true,
-          maintainAspectRatio: true,
-          plugins: {
-            title: {
-              display: true,
-              text: `图表类型：${type}`,
-              font: { size: 18 }
-            },
-            tooltip: {
-              callbacks: {
-                label: ctx => `${ctx.dataset.label}: ${ctx.raw}%`
-              }
-            },
-            legend: {
-              position: "bottom"
-            }
+        const chart = new Chart(ctx, {
+          type: type,
+          data: {
+            labels: labels,
+            datasets: datasets
           },
-
-          scales: (["radar", "pie", "doughnut"].includes(type)) ? {} : {
-            x: {
-              beginAtZero: true,
-              max: 100,
+          options: {
+            indexAxis: type === "bar" && chartData.horizontal ? "y" : "x",
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
               title: {
                 display: true,
-                text: getAxisTitle("x", type, chartData.horizontal)
+                text: `Chart Type: ${type}`,
+                font: { size: 18 }
+              },
+              tooltip: {
+                callbacks: {
+                  label: ctx => `${ctx.dataset.label}: ${ctx.raw}%`
+                }
+              },
+              legend: {
+                position: "bottom"
               }
             },
-            y: {
-              beginAtZero: true,
-              title: {
-                display: true,
-                text: getAxisTitle("y", type, chartData.horizontal)
+            scales: (["radar", "pie", "doughnut"].includes(type)) ? {} : {
+              x: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: getAxisTitle("x", type, chartData.horizontal)
+                }
+              },
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: getAxisTitle("y", type, chartData.horizontal)
+                }
               }
             }
           }
-        }
+        });
+
+        chartData.charts.push(chart);
       });
+    }
 
-      chartData.charts.push(chart);
-    });
-  }
+    function toggleOrientation() {
+      chartData.horizontal = !chartData.horizontal;
+      renderCharts();
+    }
 
-  function toggleOrientation() {
-    chartData.horizontal = !chartData.horizontal;
-    renderCharts();
-  }
+    function downloadChart() {
+      const charts = document.querySelectorAll("#chart-container canvas");
+      charts.forEach((canvas, i) => {
+        const link = document.createElement("a");
+        const whiteBG = document.createElement("canvas");
+        const ctx = whiteBG.getContext("2d");
+        whiteBG.width = canvas.width;
+        whiteBG.height = canvas.height;
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, whiteBG.width, whiteBG.height);
+        ctx.drawImage(canvas, 0, 0);
+        link.download = `chart_${i + 1}.png`;
+        link.href = whiteBG.toDataURL();
+        link.click();
+      });
+    }
 
-  function downloadChart() {
-    const charts = document.querySelectorAll("#chart-container canvas");
-    charts.forEach((canvas, i) => {
-      const link = document.createElement("a");
-      const whiteBG = document.createElement("canvas");
-      const ctx = whiteBG.getContext("2d");
-      whiteBG.width = canvas.width;
-      whiteBG.height = canvas.height;
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, whiteBG.width, whiteBG.height);
-      ctx.drawImage(canvas, 0, 0);
-      link.download = `chart_${i + 1}.png`;
-      link.href = whiteBG.toDataURL();
-      link.click();
-    });
-  }
-
-  function getRandomColor() {
-    const r = Math.floor(Math.random() * 200);
-    const g = Math.floor(Math.random() * 200);
-    const b = Math.floor(Math.random() * 200);
-    return `rgba(${r},${g},${b},0.6)`;
-  }
+    function getRandomColor() {
+      const r = Math.floor(Math.random() * 200);
+      const g = Math.floor(Math.random() * 200);
+      const b = Math.floor(Math.random() * 200);
+      return `rgba(${r},${g},${b},0.6)`;
+    }
 </script>
 </body>
 </html>
